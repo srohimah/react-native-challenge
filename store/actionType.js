@@ -1,0 +1,3 @@
+export const FETCH_IMAGE = 'FETCH_IMAGE'
+export const LOADING_IMAGE = 'LOADING_IMAGE'
+export const ERROR_IMAGE = 'ERROR_IMAGE'
