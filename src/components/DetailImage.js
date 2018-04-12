@@ -1,21 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, Image, Button, TouchableOpacity } from 'react-native';
-import axios from 'axios'
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import {withNavigation} from 'react-navigation'
+import { StyleSheet, Text, View, FlatList, Image, Button } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+import moment from 'moment'
 
-class ListImage extends React.Component {
-  constructor(){
-    super()
-      this.state = {
-        content: []
-      }
-  }
-  
+
+export default class DetailsScreen extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <View key={this.props.data.id} style={styles.imageList}>
+       <View key={this.props.data.id} style={styles.imageList}>
         <Image
           style={{width: 320, height: 320}}
           source={{uri: this.props.data.images.standard_resolution.url}}
@@ -30,26 +22,15 @@ class ListImage extends React.Component {
           <View style={styles.icon}>
             <FontAwesome name='send-o' size={27} color='#777' />
           </View>
-          <View style={styles.icon}>
-          </View>
         </View>
           <Text style={styles.caption}>{this.props.data.likes.count} likes</Text>
           <View style={styles.textWrapper}>
             <Text style={styles.caption}>{this.props.data.user.full_name}</Text>
-            <Text>{this.props.data.caption.text.substring(0,20)}</Text>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                this.props.navigation.navigate('Details', {
-                  itemId: this.props.data.id,
-                });
-              }}
-              >
-              <Text style={{color:'#888'}}>... more</Text>
-            </TouchableOpacity>
+            <Text>{this.props.data.caption.text}</Text>
           </View>
+          <Text style={styles.comment}>View all {this.props.data.comments.count} comments</Text>
+          <Text style={styles.date}>{moment(Number(this.props.data.created_time)*1000).format('LL')}</Text>
         </View>
-      </View>
     );
   }
 }
@@ -58,13 +39,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+   
   },
   imageList: {
     backgroundColor: '#eee',
     padding: 20,
-    marginBottom: 5,
   },
   iconWrapper: {
     flexWrap: 'wrap', 
@@ -84,7 +63,12 @@ const styles = StyleSheet.create({
   caption: {
     fontWeight: 'bold',
     marginRight: 5,
+  },
+  comment: {
+    color:'#888'
+  },
+  date: {
+    color:'#888',
+    fontSize: 11,
   }
 });
-
-export default withNavigation(ListImage)

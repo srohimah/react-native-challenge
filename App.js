@@ -1,31 +1,54 @@
+console.disableYellowBox =  true
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
-import ListImage from './src/components/ListImage'
-import DetailImage from './src/components/Detail'
-import Other from './src/components/Other'
+import Homepage from './src/screens/Home'
+import Detail from './src/screens/Detail'
+import Profile from './src/components/Profile'
 import {StackNavigator, TabNavigator, TabBarBottom} from 'react-navigation'
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {Provider} from 'react-redux'
+import store from './src/store/index'
 
 export default class App extends React.Component {
   render() {
     return (
-      <RootStack/>
-      // <Navigator/>
+      <Provider store={store}>
+        <Navigation />
+      </Provider>
     );
   }
 }
+
+const myProfile = StackNavigator (
+  {
+    Profiles: {
+      screen: Profile
+    }
+  },
+  {
+    initialRouteName: 'Profiles',
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: '#f4511e',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    },
+  }
+)
 const RootStack = StackNavigator(
   {
     Home: {
-      screen: ListImage,
+      screen: Homepage,
     },
     Details: {
-      screen: DetailImage,
+      screen: Detail,
     },
   },
   {
     initialRouteName: 'Home',
-    /* The header config from HomeScreen is now here */
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#f4511e',
@@ -38,19 +61,33 @@ const RootStack = StackNavigator(
   }
 );
 
-// export default TabNavigator(
-//   {
-//     Home: { screen: ListImage },
-//     Settings: { screen: Other },
-//   },
-//   {
-//     tabBarComponent: TabBarBottom,
-//     tabBarPosition: 'bottom',
-//     tabBarOptions: {
-//       activeTintColor: 'tomato',
-//       inactiveTintColor: 'gray',
-//     },
-//     animationEnabled: false,
-//     swipeEnabled: false,
-//   }
-// );
+const Navigation = TabNavigator(
+  {
+    Home: { screen: RootStack },
+    Profile: { screen: myProfile },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, tintColor }) => {
+        const { routeName } = navigation.state;
+        let iconName;
+        if (routeName === 'Home') {
+          return <MaterialCommunityIcons name='home' size={25} color={tintColor} />;
+        } else if (routeName === 'Profile') {
+          return <MaterialCommunityIcons name='face' size={25} color={tintColor} />;
+        }
+      },
+    }),
+    tabBarOptions: {
+      style: {
+        backgroundColor: '#f4511e',
+      },
+      activeTintColor: 'white',
+      inactiveTintColor: '#BBB',
+    },
+    tabBarComponent: TabBarBottom,
+    tabBarPosition: 'bottom',
+    animationEnabled: false,
+    swipeEnabled: false,
+  }
+);
